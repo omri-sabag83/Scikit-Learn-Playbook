@@ -19,14 +19,14 @@ and neural networks are out of scope (reserved for a possible Part II).
 
 ## Progress
 
-`🟩⬜⬜⬜⬜⬜` **17% complete (1/6 modules)**
+`🟩🟩⬜⬜⬜⬜` **33% complete (2/6 modules)**
 
 ⬜ Not started · 🟨 In progress · 🟩 Completed
 
 | # | Module | Status | Completed On |
 |---|--------|--------|---------------|
 | 1 | The Modelling Workflow: Splits, Pipelines, Cross-Validation & Leakage | 🟩 Completed | 2026-09-24 |
-| 2 | Regression for Driver Analysis | ⬜ Not started | |
+| 2 | Regression for Driver Analysis | 🟩 Completed | 2026-09-25 |
 | 3 | One Tree Model, Interpreted with Permutation Importance | ⬜ Not started | |
 | 4 | Evaluation Metrics under Class Imbalance | ⬜ Not started | |
 | 5 | Calibration: Can You Trust the Probabilities? | ⬜ Not started | |
@@ -118,10 +118,11 @@ preprocessing steps, classify each as safe or leaky and say why.
 - Linear regression (continuous target) and logistic regression (binary target)
   in scikit-learn, and reading their coefficients (for logistic: log-odds and
   odds ratios)
-- scikit-learn's `LogisticRegression` applies an L2 penalty by default, which
-  shrinks coefficients. That's fine for prediction but invalid for inference.
-  statsmodels gives unpenalized estimates with p-values and confidence
-  intervals (CIs)
+- scikit-learn is built for prediction: its `LogisticRegression` reports no
+  p-values or confidence intervals (CIs), and by default applies a penalty that
+  pulls coefficients toward zero (negligible with large samples, noticeable with
+  small ones). statsmodels is built for inference: unpenalized estimates with
+  p-values and CIs
 - Standardized coefficients, to compare drivers measured in different units
 - Multicollinearity (the six monthly repayment-status columns move together)
   and VIF (Variance Inflation Factor)
@@ -135,10 +136,10 @@ coefficient as a causal effect, is a common and costly mistake.
 **Worked example**
 Logistic regression of next-month default on repayment history, credit limit,
 bill and payment amounts, and demographics: the same model fitted in
-scikit-learn (penalized, for prediction) and in statsmodels (unpenalized, for
-inference). Comparing the two sets of coefficients shows what the default
-penalty changes, and the odds ratios translate the key driver into a
-plain-English sentence.
+scikit-learn (for prediction) and in statsmodels (for inference). With 18,000
+training rows the two agree almost exactly; on a 300-row sample, the default
+penalty visibly shrinks scikit-learn's coefficients. Odds ratios then translate
+the key driver into a plain-English sentence.
 
 **Resources**
 - [Regression and Other Stories](https://avehtari.github.io/ROS-Examples/)
@@ -275,6 +276,9 @@ would you check it?"
   vs. cost of a wrongly declined client)
 - Fairness caveat: sex, age and marital status are protected attributes in
   most lending regulation
+- The target itself is undefined in the source data (what counts as "default" is
+  never specified, found in Module 2), so the score predicts "what the bank
+  labelled default", a limit to state alongside every result
 - Bootstrap confidence intervals for the headline metrics
 
 **Why it matters**
