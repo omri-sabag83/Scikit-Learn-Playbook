@@ -27,9 +27,11 @@ def load_credit() -> pd.DataFrame:
     """UCI Default of Credit Card Clients: 30,000 clients, target default = 1 if they defaulted next month.
 
     The raw file has two header rows (X1..X23 codes, then names); we keep the names.
+    September's repayment status is misnamed PAY_0 in the file (there is no PAY_1);
+    it's renamed PAY_1 so all three column families number September as 1.
     """
     df = pd.read_csv(RAW / "credit_default.csv", header=1)
-    return df.rename(columns={"default payment next month": "default"}).set_index("ID")
+    return df.rename(columns={"default payment next month": "default", "PAY_0": "PAY_1"}).set_index("ID")
 
 
 def credit_split(df: pd.DataFrame | None = None):
