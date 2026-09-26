@@ -19,7 +19,7 @@ and neural networks are out of scope (reserved for a possible Part II).
 
 ## Progress
 
-`🟩🟩⬜⬜⬜⬜` **33% complete (2/6 modules)**
+`🟩🟩🟩⬜⬜⬜` **50% complete (3/6 modules)**
 
 ⬜ Not started · 🟨 In progress · 🟩 Completed
 
@@ -27,7 +27,7 @@ and neural networks are out of scope (reserved for a possible Part II).
 |---|--------|--------|---------------|
 | 1 | The Modelling Workflow: Splits, Pipelines, Cross-Validation & Leakage | 🟩 Completed | 2026-09-24 |
 | 2 | Regression for Driver Analysis | 🟩 Completed | 2026-09-25 |
-| 3 | One Tree Model, Interpreted with Permutation Importance | ⬜ Not started | |
+| 3 | One Tree Model, Interpreted with Permutation Importance | 🟩 Completed | 2026-09-26 |
 | 4 | Evaluation Metrics under Class Imbalance | ⬜ Not started | |
 | 5 | Calibration: Can You Trust the Probabilities? | ⬜ Not started | |
 | 6 | The Risk Score: Building It and Deciding Whether to Trust It | ⬜ Not started | |
@@ -135,7 +135,7 @@ coefficient as a causal effect, is a common and costly mistake.
 
 **Worked example**
 Logistic regression of next-month default on repayment history, credit limit,
-bill and payment amounts, and demographics: the same model fitted in
+bill and payment amounts, and personal attributes: the same model fitted in
 scikit-learn (for prediction) and in statsmodels (for inference). With 18,000
 training rows the two agree almost exactly; on a 300-row sample, the default
 penalty visibly shrinks scikit-learn's coefficients. Odds ratios then translate
@@ -163,12 +163,12 @@ interpret a logistic regression coefficient?"
   averaged (one model, used as-is, not a tour of ensembles)
 - What a tree captures that a linear model misses: thresholds and interactions
 - Impurity-based importance (built into the forest) vs. permutation importance
-  (measured on held-out data), and why the first is biased
-- Correlated features share or hide their importance, so correlated columns
-  are permuted together as a group
+  (measured on the validation rows), and why the first is biased
+- Overlapping columns share or hide their importance, so overlapping columns
+  are shuffled together as a group
 
 **Why it matters**
-"Which features matter most?" is the tree-model version of driver analysis. The
+"Which columns matter most?" is the tree-model version of driver analysis. The
 default importance plot is the one most often shown, and the one most often
 wrong.
 
@@ -186,8 +186,10 @@ six correlated repayment-status columns.
 **Exercise type:** compare-and-reconcile: where the forest's drivers agree or
 disagree with Module 2's regression, and why.
 
-**Interview angle:** "How do you explain a black-box model to a stakeholder?" /
-"What's wrong with feature importance?"
+**Interview angle:** "How do you explain a black-box model (one whose internal
+reasoning can't be read directly, like a forest) to a stakeholder?" / "What's
+wrong with the **built-in importance ranking** a model gives you by default?"
+(interviewers often phrase it as "what's wrong with feature importance?")
 
 ---
 
