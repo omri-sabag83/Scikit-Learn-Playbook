@@ -46,3 +46,28 @@ def credit_split(df: pd.DataFrame | None = None):
     rest, test = train_test_split(df, test_size=0.20, stratify=df["default"], random_state=SEED)
     train, valid = train_test_split(rest, test_size=0.25, stratify=rest["default"], random_state=SEED)
     return train, valid, test
+
+
+MONTHS = {1: "sep", 2: "aug", 3: "jul", 4: "jun", 5: "may", 6: "apr"}   # PAY_1 = September ... PAY_6 = April
+
+
+def prepare_credit(d: pd.DataFrame) -> pd.DataFrame:
+    """The prepared columns used from Module 3 on (Module 2 builds its own, with only September and August lateness).
+
+    Amounts in thousands of NT$. Months late: the PAY_ status with -2/-1/0 set to 0 (see Module 2, Part 0).
+    """
+    edu = d["EDUCATION"].map({1: "graduate", 2: "university", 3: "high school"}).fillna("other")
+    X = pd.DataFrame({
+        "limit_k":        d["LIMIT_BAL"] / 1000,
+        "age":            d["AGE"],
+        "female":         (d["SEX"] == 2).astype(int),
+        "married":        (d["MARRIAGE"] == 1).astype(int),
+        "edu_graduate":   (edu == "graduate").astype(int),
+        "edu_highschool": (edu == "high school").astype(int),
+        "edu_other":      (edu == "other").astype(int),
+    }, index=d.index)
+    for i, m in MONTHS.items():
+        X[f"late_{m}"] = d[f"PAY_{i}"].clip(lower=0)
+    X["bill_sep_k"] = d["BILL_AMT1"] / 1000
+    X["paid_sep_k"] = d["PAY_AMT1"] / 1000
+    return X
