@@ -19,7 +19,7 @@ and neural networks are out of scope (reserved for a possible Part II).
 
 ## Progress
 
-`🟩🟩🟩🟩⬜⬜` **67% complete (4/6 modules)**
+`🟩🟩🟩🟩🟩⬜` **83% complete (5/6 modules)**
 
 ⬜ Not started · 🟨 In progress · 🟩 Completed
 
@@ -29,7 +29,7 @@ and neural networks are out of scope (reserved for a possible Part II).
 | 2 | Regression for Driver Analysis | 🟩 Completed | 2026-09-25 |
 | 3 | One Tree Model, Interpreted with Permutation Importance | 🟩 Completed | 2026-09-26 |
 | 4 | Evaluation Metrics under Class Imbalance | 🟩 Completed | 2026-09-27 |
-| 5 | Calibration: Can You Trust the Probabilities? | ⬜ Not started | |
+| 5 | Calibration: Can You Trust the Probabilities? | 🟩 Completed | 2026-09-28 |
 | 6 | The Risk Score: Building It and Deciding Whether to Trust It | ⬜ Not started | |
 
 ---
@@ -235,13 +235,14 @@ of defaulters, which metric and cut-off, and why.
 ## <u>Module 5 — Calibration: Can You Trust the Probabilities?</u>
 
 **Concepts**
-- Ranking (does the model put riskier cases higher?) vs. calibration (when it
+- Ranking (does the model give riskier clients higher scores?) vs. calibration (when it
   says 30%, do about 30% default?). They are different properties
 - Reliability diagrams and the Brier score
-- Why Random Forest probabilities, and anything trained with `class_weight`,
-  come out miscalibrated
-- `CalibratedClassifierCV`: sigmoid vs. isotonic, and why calibration must be
-  fitted on rows the model was not trained on
+- Why anything trained with `class_weight` comes out miscalibrated (forests can
+  be too, though Module 3's plain forest turns out well calibrated on this data)
+- Two ways to correct scores, sigmoid vs. isotonic (scikit-learn packages them as
+  `CalibratedClassifierCV`), and why the correction must be learned on rows the
+  model was not trained on
 
 **Why it matters**
 A risk score is used as a probability: for expected-loss arithmetic, pricing,
@@ -249,17 +250,18 @@ and "flag everyone above 20%". If the probabilities are off, every decision
 built on them is off, even when the ranking is excellent.
 
 **Worked example**
-Reliability diagrams for Module 2's logistic regression, Module 3's forest,
-and a class-weighted model on the validation set, before and after calibration,
-with the Brier score for each.
+Reliability diagrams for logistic regression, Module 3's plain forest and Module 4's
+balanced forest on the validation rows, then the balanced forest corrected, with
+the Brier score for each. Plus a test of the rule itself: the same correction
+learned on training rows vs. validation rows, for a forest that memorises and for
+one that doesn't.
 
 **Resources**
 - [Probability calibration](https://scikit-learn.org/stable/modules/calibration.html)
-  (scikit-learn user guide §1.16, ~20 min, verified). Includes why forests
-  produce a sigmoid-shaped reliability curve (Niculescu-Mizil & Caruana, 2005).
+  (scikit-learn user guide §1.16, ~20 min, verified).
 
-**Exercise type:** read-the-reliability-diagram drills: over- or
-under-confident, where, and what it would cost.
+**Exercise type:** read-the-reliability-diagram drills: over/under
+confident, where, and what it would cost.
 
 **Interview angle:** "Your model says 30% risk. What does that mean, and how
 would you check it?"
