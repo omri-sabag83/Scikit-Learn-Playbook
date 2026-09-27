@@ -19,7 +19,7 @@ and neural networks are out of scope (reserved for a possible Part II).
 
 ## Progress
 
-`🟩🟩🟩⬜⬜⬜` **50% complete (3/6 modules)**
+`🟩🟩🟩🟩⬜⬜` **67% complete (4/6 modules)**
 
 ⬜ Not started · 🟨 In progress · 🟩 Completed
 
@@ -28,11 +28,9 @@ and neural networks are out of scope (reserved for a possible Part II).
 | 1 | The Modelling Workflow: Splits, Pipelines, Cross-Validation & Leakage | 🟩 Completed | 2026-09-24 |
 | 2 | Regression for Driver Analysis | 🟩 Completed | 2026-09-25 |
 | 3 | One Tree Model, Interpreted with Permutation Importance | 🟩 Completed | 2026-09-26 |
-| 4 | Evaluation Metrics under Class Imbalance | ⬜ Not started | |
+| 4 | Evaluation Metrics under Class Imbalance | 🟩 Completed | 2026-09-27 |
 | 5 | Calibration: Can You Trust the Probabilities? | ⬜ Not started | |
 | 6 | The Risk Score: Building It and Deciding Whether to Trust It | ⬜ Not started | |
-
-*The bar and the table get updated as modules are completed.*
 
 ---
 
@@ -197,24 +195,29 @@ wrong with the **built-in importance ranking** a model gives you by default?"
 
 **Concepts**
 - Accuracy's trap: predicting "nobody defaults" is right 78% of the time here
+  (because 77.9% of clients paid)
 - Confusion matrix, precision ("of those flagged, how many defaulted?"),
   recall ("of those who defaulted, how many did we flag?")
 - ROC-AUC vs. PR-AUC (areas under the Receiver Operating Characteristic and
   Precision-Recall curves), and why a random model's PR-AUC equals the
-  prevalence (the share of positives)
-- Thresholds are a business decision, separate from the model
-- `class_weight`: what it changes (the ranking of cases barely, the
-  probabilities a lot, which Module 5 cares about)
+  prevalence (the share of defaulters)
+- The cut-off that turns scores into yes/no is a business decision, separate
+  from the model
+- `class_weight` (a setting that makes the model count each defaulter more
+  heavily while learning): what it changes (the ranking of clients barely, the
+  scores a lot, which Module 5 cares about)
 
 **Why it matters**
 Most analyst modelling targets are rare events (fraud, churn, default, a
-security incident). Reporting a metric that looks good regardless of skill is
-the evaluation version of leakage.
+security incident). Reporting a metric that looks good regardless of the model's skill is
+the evaluation version of leakage (Module 1: a result that looks good for a
+reason that won't hold in real use).
 
 **Worked example**
 A prevalence sweep: the same model scored on validation sets where defaulters
-are progressively downsampled from 22% to about 2%. ROC-AUC barely moves, while
-PR-AUC falls, because precision depends on how rare positives are. Same model,
+are made progressively rarer (by randomly removing some of them), from 22% to
+about 2%. ROC-AUC barely moves, while PR-AUC falls, because precision depends on
+how rare defaulters are. Same model,
 same data: a controlled demonstration of what each metric does and doesn't see.
 
 **Resources**
@@ -222,8 +225,8 @@ same data: a controlled demonstration of what each metric does and doesn't see.
   (Saito & Rehmsmeier, PLOS ONE 2015, open access, verified). Introduction +
   figures, ~20 min.
 
-**Exercise type:** metric-choice cases: for a given business problem and base
-rate, which metric and threshold, and why.
+**Exercise type:** metric-choice cases: for a given business problem and share
+of defaulters, which metric and cut-off, and why.
 
 **Interview angle:** "Why not use accuracy?" / "ROC-AUC or PR-AUC for fraud?"
 
@@ -265,7 +268,7 @@ would you check it?"
 
 ## <u>Module 6 — The Risk Score: Building It and Deciding Whether to Trust It</u>
 
-*Gate: pause for Omri's go-ahead before starting this module.*
+*Checkpoint: this module builds on Modules 1–5, so it starts only after they are reviewed.*
 
 **Concepts**
 - From probability to points: a multi-factor scorecard on the log-odds scale
