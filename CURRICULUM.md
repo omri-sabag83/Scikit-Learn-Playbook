@@ -19,7 +19,7 @@ and neural networks are out of scope (reserved for a possible Part II).
 
 ## Progress
 
-`🟩🟩🟩🟩🟩⬜` **83% complete (5/6 modules)**
+`🟩🟩🟩🟩🟩🟩` **100% complete (6/6 modules)**
 
 ⬜ Not started · 🟨 In progress · 🟩 Completed
 
@@ -30,7 +30,7 @@ and neural networks are out of scope (reserved for a possible Part II).
 | 3 | One Tree Model, Interpreted with Permutation Importance | 🟩 Completed | 2026-09-26 |
 | 4 | Evaluation Metrics under Class Imbalance | 🟩 Completed | 2026-09-27 |
 | 5 | Calibration: Can You Trust the Probabilities? | 🟩 Completed | 2026-09-28 |
-| 6 | The Risk Score: Building It and Deciding Whether to Trust It | ⬜ Not started | |
+| 6 | The Risk Score: Building It and Deciding Whether to Trust It | 🟩 Completed | 2026-09-30 |
 
 ---
 
@@ -62,7 +62,7 @@ on. Every printed statistic gets a plain-English sentence.
   made-up example.
 
 **The locked split** (Modules 2–6): the credit data is split once, with a fixed
-seed, into 60% train / 20% validation / 20% test (see `common.py`). Modules 2–5
+seed, into 60% training / 20% validation / 20% testing (see `common.py`). Modules 2–5
 compare models only on cross-validation and the validation set. The test set is
 used exactly once, in Module 6. Looking at the test set repeatedly while making
 choices is the modelling equivalent of peeking at an A/B test.
@@ -128,8 +128,9 @@ preprocessing steps, classify each as safe or leaky and say why.
 
 **Why it matters**
 "What drives default / churn / conversion?" is the most common modelling
-question an analyst gets. Answering it with shrunken coefficients, or reading a
-coefficient as a causal effect, is a common and costly mistake.
+question an analyst gets. Answering it with coefficients pulled toward zero by a
+penalty (scikit-learn's default, above), or reading a coefficient as a causal
+effect, is a common and costly mistake.
 
 **Worked example**
 Logistic regression of next-month default on repayment history, credit limit,
@@ -276,37 +277,41 @@ would you check it?"
 - From probability to points: a multi-factor scorecard on the log-odds scale
   ("every 20 points doubles the odds of default"), as used in credit and
   insurance scoring
-- Risk bands (A–E) and the checks a score must pass: default rates rise
-  monotonically across bands, with confidence intervals; calibration holds on
-  the untouched test set; performance is stable across subgroups
+- Risk bands (A–E) and the checks a score must pass: default rates rise steadily
+  from band A to band E, with margins of error; the probabilities stay honest on
+  the untouched test rows; the score works equally well across groups of clients
 - Choosing a cut-off under explicit cost assumptions (cost of a missed default
   vs. cost of a wrongly declined client)
-- Fairness caveat: sex, age and marital status are protected attributes in
-  most lending regulation
+- Fairness: lending laws forbid scoring on sex or marital status and restrict
+  the use of age (for example the US Equal Credit Opportunity Act), so the score
+  leaves all three out, and is then checked for working equally well across
+  those groups
 - The target itself is undefined in the source data (what counts as "default" is
   never specified, found in Module 2), so the score predicts "what the bank
   labelled default", a limit to state alongside every result
-- Bootstrap confidence intervals for the headline metrics
+- Ranges for the headline grades, from re-drawn groups of test clients (the
+  bootstrap, as in Modules 1 and 3)
 
 **Why it matters**
 This is where the model becomes a decision tool. It's also the result that
-needs the most scrutiny, so its headline claims are independently verified
-(a fresh agent that sees only the claim and the data).
+needs the most scrutiny, so the results of all three of its checks are
+independently verified (a fresh agent that sees only the claim and the data).
 
 **Worked example**
-The final scorecard evaluated once on the locked test set: band table, reliability
-diagram, cost-based cut-off, and subgroup stability, each finding tagged.
+The final points score evaluated once on the locked test rows: band table,
+honesty check, cost-based cut-off, and checks across groups of clients, each
+finding tagged.
 
-**Resources** — verified when the module is built (after the gate).
+**Resources**
+- [formatpoints: format scorecard points and scaling](https://www.mathworks.com/help/finance/creditscorecard.formatpoints.html)
+  (MathWorks documentation, verified, ~10 min). How "points to double the odds"
+  scaling turns a model's log-odds into scorecard points.
+- [Equal Credit Opportunity Act](https://www.ftc.gov/legal-library/browse/statutes/equal-credit-opportunity-act)
+  (US Federal Trade Commission, verified, ~5 min). The US law behind leaving sex,
+  marital status and age out of credit decisions.
 
 **Exercise type:** a short score memo: what the score is, how well it works,
 where it shouldn't be trusted.
 
 **Interview angle:** "How would you build a risk score for X?" / "How would you
 know if the score stopped working?"
-
----
-
-## Open questions / decisions for as we go
-
-- None yet.
